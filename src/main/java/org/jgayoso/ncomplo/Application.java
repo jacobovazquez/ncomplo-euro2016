@@ -1,6 +1,5 @@
 package org.jgayoso.ncomplo;
 
-import javax.servlet.Filter;
 import org.jasypt.util.password.ConfigurablePasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +19,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -45,14 +43,6 @@ public class Application implements WebMvcConfigurer {
   @Bean
   public ConfigurablePasswordEncryptor configurablePasswordEncryptor() {
     return new ConfigurablePasswordEncryptor();
-  }
-
-  @Bean
-  public Filter characterEncodingFilter() {
-    final CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-    characterEncodingFilter.setEncoding("UTF-8");
-    characterEncodingFilter.setForceEncoding(true);
-    return characterEncodingFilter;
   }
 
   @Override
