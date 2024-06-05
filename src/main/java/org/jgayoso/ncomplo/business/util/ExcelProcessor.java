@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,7 +34,7 @@ import org.springframework.util.StringUtils;
 
 public class ExcelProcessor {
 
-  private static final Logger logger = Logger.getLogger(ExcelProcessor.class);
+  private static final Log logger = LogFactory.getLog(ExcelProcessor.class);
 
   public static int processGroupGamesBets(
       Integer leagueId,

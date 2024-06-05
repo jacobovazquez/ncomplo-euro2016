@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jgayoso.ncomplo.business.entities.Competition;
 import org.jgayoso.ncomplo.business.entities.GameSide;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class GameSideService {
 
-  private static final Logger logger = Logger.getLogger(GameSideService.class);
+  private static final Log logger = LogFactory.getLog(GameSideService.class);
 
   @Autowired private CompetitionRepository competitionRepository;
 
@@ -37,7 +38,7 @@ public class GameSideService {
 
   @Transactional
   public GameSide find(final Integer id) {
-    return this.gameSideRepository.findOne(id);
+    return this.gameSideRepository.findById(id).orElse(null);
   }
 
   @Transactional
@@ -55,9 +56,9 @@ public class GameSideService {
       final Map<String, String> namesByLang,
       final String code) {
 
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
 
-    final GameSide gameSide = (id == null ? new GameSide() : this.gameSideRepository.findOne(id));
+    final GameSide gameSide = (id == null ? new GameSide() : this.gameSideRepository.findById(id).orElse(null));
 
     gameSide.setCompetition(competition);
     gameSide.setName(name);
@@ -75,7 +76,7 @@ public class GameSideService {
   @Transactional
   public void deleteAll(final Integer competitionId) {
 
-    Competition competition = this.competitionRepository.findOne(competitionId);
+    Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
 
     for (GameSide gameSide : new HashSet<>(competition.getGameSides())) {
       competition.getGameSides().remove(gameSide);
@@ -85,7 +86,7 @@ public class GameSideService {
   @Transactional
   public void delete(final Integer gameSideId) {
 
-    final GameSide gameSide = this.gameSideRepository.findOne(gameSideId);
+    final GameSide gameSide = this.gameSideRepository.findById(gameSideId).orElse(null);
     final Competition competition = gameSide.getCompetition();
 
     competition.getGameSides().remove(gameSide);
@@ -93,7 +94,7 @@ public class GameSideService {
 
   @Transactional
   public void processFile(Integer competitionId, String login, File competitionFile) throws CompetitionParserException {
-    Competition competition = this.competitionRepository.findOne(competitionId);
+    Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
     if (competition == null) {
       logger.error("Not possible to processFile, competition not found");
       return;

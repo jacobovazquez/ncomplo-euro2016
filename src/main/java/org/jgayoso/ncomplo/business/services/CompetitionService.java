@@ -4,7 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgayoso.ncomplo.business.entities.Competition;
 import org.jgayoso.ncomplo.business.entities.CompetitionParserProperties;
 import org.jgayoso.ncomplo.business.entities.repositories.CompetitionParserPropertiesRepository;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CompetitionService {
 
-  private static final Logger logger = Logger.getLogger(CompetitionService.class);
+  private static final Log logger = LogFactory.getLog(CompetitionService.class);
 
   @Autowired private CompetitionRepository competitionRepository;
   @Autowired private CompetitionParserPropertiesRepository competitionParserPropertiesRepository;
@@ -36,7 +37,7 @@ public class CompetitionService {
 
   @Transactional
   public Competition find(final Integer id) {
-    return this.competitionRepository.findOne(id);
+    return this.competitionRepository.findById(id).orElse(null);
   }
 
   @Transactional
@@ -55,7 +56,7 @@ public class CompetitionService {
       final String updaterUri,
       final CompetitionParserProperties competitionParserProperties) {
 
-    final Competition competition = (id == null ? new Competition() : this.competitionRepository.findOne(id));
+    final Competition competition = (id == null ? new Competition() : this.competitionRepository.findById(id).orElse(null));
 
     competition.setName(name);
     competition.getNamesByLang().clear();
@@ -79,6 +80,6 @@ public class CompetitionService {
 
   @Transactional
   public void delete(final Integer competitionId) {
-    this.competitionRepository.delete(competitionId);
+    this.competitionRepository.deleteById(competitionId);
   }
 }

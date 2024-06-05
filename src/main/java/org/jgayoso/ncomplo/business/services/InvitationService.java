@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgayoso.ncomplo.business.entities.Invitation;
 import org.jgayoso.ncomplo.business.entities.League;
 import org.jgayoso.ncomplo.business.entities.User;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class InvitationService {
 
-  private static final Logger logger = Logger.getLogger(InvitationService.class);
+  private static final Log logger = LogFactory.getLog(InvitationService.class);
 
   @Autowired private InvitationRepository invitationRepository;
 
@@ -33,7 +34,7 @@ public class InvitationService {
   }
 
   public Invitation findById(final Integer invitationId) {
-    return this.invitationRepository.findOne(invitationId);
+    return this.invitationRepository.findById(invitationId).orElse(null);
   }
 
   public Invitation findByToken(final String token) {

@@ -1,6 +1,7 @@
 package org.jgayoso.ncomplo.web.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgayoso.ncomplo.business.entities.ForgotPasswordToken;
 import org.jgayoso.ncomplo.business.entities.Invitation;
 import org.jgayoso.ncomplo.business.entities.User;
@@ -26,7 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class AuthController {
 
-  private static final Logger logger = Logger.getLogger(AuthController.class);
+  private static final Log logger = LogFactory.getLog(AuthController.class);
 
   @Autowired private UserService userService;
 

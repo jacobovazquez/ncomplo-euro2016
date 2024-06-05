@@ -7,7 +7,8 @@ import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgayoso.ncomplo.business.entities.Competition;
 import org.jgayoso.ncomplo.business.entities.Game;
 import org.jgayoso.ncomplo.business.entities.League;
@@ -27,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class GameResultUploader {
 
-  private static final Logger logger = Logger.getLogger(GameResultUploader.class);
+  private static final Log logger = LogFactory.getLog(GameResultUploader.class);
   private static final RestTemplate restTemplate = new RestTemplate();
 
   @Autowired private GameRepository gameRepository;

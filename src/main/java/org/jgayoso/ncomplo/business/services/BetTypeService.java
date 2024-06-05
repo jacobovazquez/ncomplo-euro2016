@@ -43,7 +43,7 @@ public class BetTypeService {
 
   @Transactional
   public BetType find(final Integer id) {
-    return this.betTypeRepository.findOne(id);
+    return this.betTypeRepository.findById(id).orElse(null);
   }
 
   public BetType findByName(final Integer competitionId, String name) {
@@ -68,9 +68,9 @@ public class BetTypeService {
       final boolean scoreMatter,
       final boolean resultMatter) {
 
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
 
-    final BetType betType = (id == null ? new BetType() : this.betTypeRepository.findOne(id));
+    final BetType betType = (id == null ? new BetType() : this.betTypeRepository.findById(id).orElse(null));
 
     betType.setCompetition(competition);
     betType.setName(name);
@@ -91,7 +91,7 @@ public class BetTypeService {
   @Transactional
   public void delete(final Integer betTypeId) {
 
-    final BetType betType = this.betTypeRepository.findOne(betTypeId);
+    final BetType betType = this.betTypeRepository.findById(betTypeId).orElse(null);
     final Competition competition = betType.getCompetition();
 
     competition.getBetTypes().remove(betType);
@@ -100,7 +100,7 @@ public class BetTypeService {
   @Transactional
   public void createDefaults(Integer competitionId) {
 
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
     BetType groupsBetType = new BetType();
     groupsBetType.setCompetition(competition);
     groupsBetType.setName(

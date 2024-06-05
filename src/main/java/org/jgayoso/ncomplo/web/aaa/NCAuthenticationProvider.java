@@ -1,7 +1,8 @@
 package org.jgayoso.ncomplo.web.aaa;
 
 import java.util.ArrayList;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jgayoso.ncomplo.business.services.UserService;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NCAuthenticationProvider implements AuthenticationProvider {
 
-  private static final Logger logger = Logger.getLogger(NCAuthenticationProvider.class);
+  private static final Log logger = LogFactory.getLog(NCAuthenticationProvider.class);
 
   @Autowired private PasswordEncryptor passwordEncryptor;
   @Autowired private UserDetailsService userDetailsService;

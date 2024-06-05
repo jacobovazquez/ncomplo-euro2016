@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgayoso.ncomplo.business.entities.Bet;
 import org.jgayoso.ncomplo.business.entities.Competition;
 import org.jgayoso.ncomplo.business.entities.Game;
@@ -44,7 +45,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 @Controller
 public class UserBetsController {
 
-  private static final Logger logger = Logger.getLogger(UserBetsController.class);
+  private static final Log logger = LogFactory.getLog(UserBetsController.class);
 
   @Autowired private LeagueService leagueService;
   @Autowired private GameService gameService;

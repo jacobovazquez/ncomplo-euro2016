@@ -12,9 +12,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -43,7 +45,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class GameService {
 
-  private static final Logger logger = Logger.getLogger(GameService.class);
+  private static final Log logger = LogFactory.getLog(GameService.class);
 
   @Autowired private CompetitionRepository competitionRepository;
 
@@ -68,7 +70,7 @@ public class GameService {
 
   @Transactional
   public Game find(final Integer id) {
-    return this.gameRepository.findOne(id);
+    return this.gameRepository.findById(id).orElse(null);
   }
 
   @Transactional
@@ -93,20 +95,20 @@ public class GameService {
       final Integer scoreA,
       final Integer scoreB) {
 
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
 
-    final Game game = (id == null ? new Game() : this.gameRepository.findOne(id));
+    final Game game = (id == null ? new Game() : this.gameRepository.findById(id).orElse(null));
 
-    final GameSide gameSideA = (gameSideAId == null ? null : this.gameSideRepository.findOne(gameSideAId));
-    final GameSide gameSideB = (gameSideBId == null ? null : this.gameSideRepository.findOne(gameSideBId));
+    final GameSide gameSideA = (gameSideAId == null ? null : this.gameSideRepository.findById(gameSideAId).orElse(null));
+    final GameSide gameSideB = (gameSideBId == null ? null : this.gameSideRepository.findById(gameSideBId).orElse(null));
 
     game.setCompetition(competition);
     game.setDate(date);
     game.setName(name);
     game.getNamesByLang().clear();
     game.getNamesByLang().putAll(namesByLang);
-    game.setDefaultBetType(this.betTypeRepository.findOne(defaultBetTypeId));
-    game.setRound(this.roundRepository.findOne(roundId));
+    game.setDefaultBetType(this.betTypeRepository.findById(defaultBetTypeId).orElse(null));
+    game.setRound(this.roundRepository.findById(roundId).orElse(null));
     game.setOrder(order);
     game.setGameSideA(gameSideA);
     game.setGameSideB(gameSideB);
@@ -123,7 +125,7 @@ public class GameService {
 
   @Transactional
   public void deleteAll(Integer competitionId) {
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
     for (Game game : new HashSet<>(competition.getGames())) {
       competition.getGames().remove(game);
     }
@@ -132,7 +134,7 @@ public class GameService {
   @Transactional
   public void delete(final Integer gameId) {
 
-    final Game game = this.gameRepository.findOne(gameId);
+    final Game game = this.gameRepository.findById(gameId).orElse(null);
     final Competition competition = game.getCompetition();
 
     competition.getGames().remove(game);
@@ -172,7 +174,7 @@ public class GameService {
 
   @Transactional
   public void processFile(Integer competitionId, String login, File competitionFile) throws CompetitionParserException {
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
     CompetitionParserProperties competitionParserProperties = competition.getCompetitionParserProperties();
     if (competitionParserProperties == null) {
       logger.error("Not possible to processFile, competition properties not found");

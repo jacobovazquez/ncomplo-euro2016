@@ -56,7 +56,7 @@ public class BetService {
   }
 
   public Bet find(final Integer id) {
-    return this.betRepository.findOne(id);
+    return this.betRepository.findById(id).orElse(null);
   }
 
   public List<Bet> findByLeagueIdAndUserLogin(final Integer leagueId, final String login, final Locale locale) {
@@ -83,7 +83,7 @@ public class BetService {
 
       List<League> leaguesToUpdate;
       if (updateAllLeagues) {
-        final User user = this.userRepository.findOne(login);
+        final User user = this.userRepository.findById(login).orElse(null);
         if (user == null) {
           throw new InternalErrorException("User " + login + " not found");
         }
@@ -244,14 +244,14 @@ public class BetService {
       final Integer scoreA,
       final Integer scoreB) {
 
-    final League league = this.leagueRepository.findOne(leagueId);
-    final User user = this.userRepository.findOne(login);
-    final Game game = this.gameRepository.findOne(gameId);
+    final League league = this.leagueRepository.findById(leagueId).orElse(null);
+    final User user = this.userRepository.findById(login).orElse(null);
+    final Game game = this.gameRepository.findById(gameId).orElse(null);
 
-    final GameSide gameSideA = (gameSideAId == null ? null : this.gameSideRepository.findOne(gameSideAId));
-    final GameSide gameSideB = (gameSideBId == null ? null : this.gameSideRepository.findOne(gameSideBId));
+    final GameSide gameSideA = (gameSideAId == null ? null : this.gameSideRepository.findById(gameSideAId).orElse(null));
+    final GameSide gameSideB = (gameSideBId == null ? null : this.gameSideRepository.findById(gameSideBId).orElse(null));
 
-    final Bet bet = (id == null ? new Bet() : this.betRepository.findOne(id));
+    final Bet bet = (id == null ? new Bet() : this.betRepository.findById(id).orElse(null));
 
     bet.setLeague(league);
     bet.setGame(game);
@@ -269,6 +269,6 @@ public class BetService {
 
   @Transactional
   public void delete(final Integer betId) {
-    this.betRepository.delete(betId);
+    this.betRepository.deleteById(betId);
   }
 }

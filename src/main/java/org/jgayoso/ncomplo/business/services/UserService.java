@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jgayoso.ncomplo.business.entities.ForgotPasswordToken;
 import org.jgayoso.ncomplo.business.entities.Invitation;
@@ -29,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-  private static final Logger logger = Logger.getLogger(UserService.class);
+  private static final Log logger = LogFactory.getLog(UserService.class);
   private static final Pattern loginPatter = Pattern.compile("^(?!none|others)[a-zA-Z0-9]*$");
   @Autowired private UserRepository userRepository;
   @Autowired private LeagueRepository leagueRepository;
@@ -47,7 +48,7 @@ public class UserService {
 
   @Transactional
   public User find(final String login) {
-    return this.userRepository.findOne(login);
+    return this.userRepository.findById(login).orElse(null);
   }
 
   public User findByEmail(final String email) {
@@ -69,7 +70,7 @@ public class UserService {
   public User registerLoggedUserFromInvitation(final Integer invitationId, final String login, final Integer leagueId)
       throws LeagueClosedException {
     final User existentUser = this.find(login);
-    final League league = this.leagueRepository.findOne(leagueId);
+    final League league = this.leagueRepository.findById(leagueId).orElse(null);
     if (league.getBetsDeadLine().before(new Date())) {
       throw new LeagueClosedException(leagueId);
     }
@@ -95,7 +96,7 @@ public class UserService {
 
     final User existentUser = this.find(login);
 
-    final League league = this.leagueRepository.findOne(leagueId);
+    final League league = this.leagueRepository.findById(leagueId).orElse(null);
     if (league.getBetsDeadLine().before(new Date())) {
       throw new LeagueClosedException(leagueId);
     }
@@ -124,9 +125,9 @@ public class UserService {
     newUser.getLeagues().add(league);
     league.getParticipants().add(newUser);
 
-    final Invitation invitation = this.invitationRepository.findOne(invitationId);
+    final Invitation invitation = this.invitationRepository.findById(invitationId).orElse(null);
     if (invitation.getToken() == null) {
-      this.invitationRepository.delete(invitationId);
+      this.invitationRepository.deleteById(invitationId);
     }
     return newUser;
   }
@@ -134,13 +135,13 @@ public class UserService {
   @Transactional
   public void acceptInvitation(final Integer invitationId, final Integer leagueId, final User user) {
 
-    final League league = this.leagueRepository.findOne(leagueId);
+    final League league = this.leagueRepository.findById(leagueId).orElse(null);
     user.getLeagues().add(league);
     league.getParticipants().add(user);
 
-    final Invitation invitation = this.invitationRepository.findOne(invitationId);
+    final Invitation invitation = this.invitationRepository.findById(invitationId).orElse(null);
     if (invitation.getToken() == null) {
-      this.invitationRepository.delete(invitationId);
+      this.invitationRepository.deleteById(invitationId);
     }
   }
 
@@ -153,9 +154,9 @@ public class UserService {
       final boolean active,
       final List<Integer> leagueIds) {
 
-    final boolean userExists = this.userRepository.exists(login);
+    final boolean userExists = this.userRepository.existsById(login);
 
-    final User user = (!userExists ? new User() : this.userRepository.findOne(login));
+    final User user = (!userExists ? new User() : this.userRepository.findById(login).orElse(null));
 
     user.setLogin(login);
 
@@ -169,7 +170,7 @@ public class UserService {
     }
     user.getLeagues().clear();
     for (final Integer leagueId : leagueIds) {
-      final League league = this.leagueRepository.findOne(leagueId);
+      final League league = this.leagueRepository.findById(leagueId).orElse(null);
       user.getLeagues().add(league);
       league.getParticipants().add(user);
     }
@@ -216,7 +217,7 @@ public class UserService {
     final String newPassword = RandomStringUtils.randomAlphanumeric(10);
     final String hashedNewPassword = this.passwordEncryptor.encryptPassword(newPassword);
 
-    final User user = this.userRepository.findOne(login);
+    final User user = this.userRepository.findById(login).orElse(null);
     user.setPassword(hashedNewPassword);
 
     if (sendEmail) {
@@ -239,7 +240,7 @@ public class UserService {
   private User changePassword(
       final String login, final String oldPassword, final String newPassword, ForgotPasswordToken forgotPasswordToken) {
 
-    final User user = this.userRepository.findOne(login);
+    final User user = this.userRepository.findById(login).orElse(null);
 
     if (oldPassword != null) {
       final String oldHashedPassword = user.getPassword();
@@ -253,7 +254,7 @@ public class UserService {
     user.setPassword(hashedNewPassword);
 
     if (forgotPasswordToken != null) {
-      this.forgotPasswordTokenRepository.delete(forgotPasswordToken.getId());
+      this.forgotPasswordTokenRepository.deleteById(forgotPasswordToken.getId());
     }
 
     return user;
@@ -261,6 +262,6 @@ public class UserService {
 
   @Transactional
   public void delete(final String login) {
-    this.userRepository.delete(login);
+    this.userRepository.deleteById(login);
   }
 }

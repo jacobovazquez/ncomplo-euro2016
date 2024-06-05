@@ -25,7 +25,7 @@ public class RoundService {
 
   @Transactional
   public Round find(final Integer id) {
-    return this.roundRepository.findOne(id);
+    return this.roundRepository.findById(id).orElse(null);
   }
 
   @Transactional
@@ -48,9 +48,9 @@ public class RoundService {
       final Map<String, String> namesByLang,
       final Integer order) {
 
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
 
-    final Round round = (id == null ? new Round() : this.roundRepository.findOne(id));
+    final Round round = (id == null ? new Round() : this.roundRepository.findById(id).orElse(null));
 
     round.setCompetition(competition);
     round.setName(name);
@@ -68,7 +68,7 @@ public class RoundService {
   @Transactional
   public void delete(final Integer roundId) {
 
-    final Round round = this.roundRepository.findOne(roundId);
+    final Round round = this.roundRepository.findById(roundId).orElse(null);
     final Competition competition = round.getCompetition();
 
     competition.getRounds().remove(round);
@@ -76,7 +76,7 @@ public class RoundService {
 
   @Transactional
   public void createDefaults(Integer competitionId) {
-    final Competition competition = this.competitionRepository.findOne(competitionId);
+    final Competition competition = this.competitionRepository.findById(competitionId).orElse(null);
 
     Round groupsRound = new Round();
     groupsRound.setCompetition(competition);

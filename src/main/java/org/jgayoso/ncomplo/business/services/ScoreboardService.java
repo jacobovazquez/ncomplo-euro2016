@@ -32,7 +32,7 @@ public class ScoreboardService {
 
     final List<ScoreboardEntry> scoreboard = new ArrayList<>();
 
-    final League league = this.leagueRepository.findOne(leagueId);
+    final League league = this.leagueRepository.findById(leagueId).orElse(null);
     final Set<User> participants = league.getParticipants();
 
     for (final User participant : participants) {

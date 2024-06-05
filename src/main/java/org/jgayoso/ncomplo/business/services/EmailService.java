@@ -11,7 +11,8 @@ import com.sendgrid.helpers.mail.objects.Personalization;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgayoso.ncomplo.business.entities.ForgotPasswordToken;
 import org.jgayoso.ncomplo.business.entities.Invitation;
 import org.jgayoso.ncomplo.business.entities.User;
@@ -26,7 +27,7 @@ import org.thymeleaf.context.Context;
 @Service
 public class EmailService {
 
-  private static final Logger logger = Logger.getLogger(EmailService.class);
+  private static final Log logger = LogFactory.getLog(EmailService.class);
 
   // TODO EmailService must be an interface and this a specific implementation
   private final SendGrid sendGrid;
